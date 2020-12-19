@@ -1,11 +1,11 @@
 import setuptools
 
-with open("READ.md","r") as file:
+with open("README.md","r") as file:
 	long_description = file.read()
 
 setuptools.setup(
 	name = "preprocessing_yaswanth", #this should be unique
-	version = "0.0.1",
+	version = "0.0.2",
 	author = "Yaswanth Babu",
 	author_email = "sunnyyashu178@gmail.com",
 	description = "This is preprocessing package",

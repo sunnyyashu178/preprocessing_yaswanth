@@ -185,14 +185,14 @@ def _make_base(x):
 		x_list.append(lemma)
 	return ' '.join(x_list)
 
-def _remove_common_words(x,n=20):
+def _remove_common_words(x,n):
 	text = x.split()
 	freq_comm = pd.Series(text).value_counts()
 	fn = freq_comm[:n]
 	x = ' '.join([t for t in x.split() if t not in fn])
 	return x
 
-def _remove_rarewords(x,n=20):
+def _remove_rarewords(x,n):
 	text = x.split()
 	freq_comm = pd.Series(text).value_counts()
 	fn = freq_comm.tail(n)
