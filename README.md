@@ -1,6 +1,6 @@
 #Preprocessing Text Python Package
 
-#### Linkdin account: https://www.linkedin.com/in/yaswanth-babu-rayarapu-071576146/
+#### account: https://bit.ly/intro_nlp
 
 This python package is prepared by YourNme.
 
