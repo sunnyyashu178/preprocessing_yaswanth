@@ -5,7 +5,7 @@ with open("README.md","r") as file:
 
 setuptools.setup(
 	name = "preprocessing_yaswanth", #this should be unique
-	version = "0.0.2",
+	version = "0.0.3",
 	author = "Yaswanth Babu",
 	author_email = "sunnyyashu178@gmail.com",
 	description = "This is preprocessing package",
