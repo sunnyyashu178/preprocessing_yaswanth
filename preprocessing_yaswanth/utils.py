@@ -10,12 +10,11 @@ from bs4 import BeautifulSoup
 import unicodedata
 from textblob import TextBlob
 
-
+nlp = spacy.load('en_core_web_sm')
 
 def _get_wordcounts(x):
 	length = len(str(x).split())
 	return length
-
 
 def _get_charcounts(x):
 	s = x.split()
@@ -44,7 +43,7 @@ def _get_digit_counts(x):
 def _get_uppercase_counts(x):
 	return len([t for t in x.split() if t.isupper()])
 
-def _get_cont_exp(x):
+def _cont_exp(x):
 	contractions = { 
 	"ain't": "am not",
 	"aren't": "are not",
@@ -130,6 +129,7 @@ def _get_cont_exp(x):
 	'dis': 'this',
 	'bak': 'back',
 	'brng': 'bring'}
+
 	if type(x) is str:
 		for key in contractions:
 			value = contractions[key]
@@ -138,18 +138,22 @@ def _get_cont_exp(x):
 	else:
 		return x
 
+
 def _get_emails(x):
 	emails = re.findall(r'([a-z0-9+._-]+@[a-z0-9+._-]+\.[a-z0-9+_-]+\b)', x)
 	counts = len(emails)
+
 	return counts, emails
+
 
 def _remove_emails(x):
 	return re.sub(r'([a-z0-9+._-]+@[a-z0-9+._-]+\.[a-z0-9+_-]+)',"", x)
 
 def _get_urls(x):
-	urls =re.findall(r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?', x)
+	urls = re.findall(r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?', x)
 	counts = len(urls)
-	return counts,urls
+
+	return counts, urls
 
 def _remove_urls(x):
 	return re.sub(r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?', '' , x)
@@ -159,18 +163,19 @@ def _remove_rt(x):
 
 def _remove_special_chars(x):
 	x = re.sub(r'[^\w ]+', "", x)
-	x = " ".join(x.split())
+	x = ' '.join(x.split())
 	return x
 
 def _remove_html_tags(x):
-	BeautifulSoup(x).get_text().strip()
+	return BeautifulSoup(x, 'lxml').get_text().strip()
+
 
 def _remove_accented_chars(x):
 	x = unicodedata.normalize('NFKD', x).encode('ascii', 'ignore').decode('utf-8', 'ignore')
 	return x
 
 def _remove_stopwords(x):
-	return ' '.join([t for t in x.split() if t not in stopwords])
+	return ' '.join([t for t in x.split() if t not in stopwords])	
 
 def _make_base(x):
 	x = str(x)
@@ -185,20 +190,23 @@ def _make_base(x):
 		x_list.append(lemma)
 	return ' '.join(x_list)
 
-def _remove_common_words(x,n):
-	text = x.split()
-	freq_comm = pd.Series(text).value_counts()
-	fn = freq_comm[:n]
+def _get_value_counts(df, col):
+	text = ' '.join(df[col])
+	text = text.split()
+	freq = pd.Series(text).value_counts()
+	return freq
+
+def _remove_common_words(x, freq, n=20):
+	fn = freq[:n]
 	x = ' '.join([t for t in x.split() if t not in fn])
 	return x
 
-def _remove_rarewords(x,n):
-	text = x.split()
-	freq_comm = pd.Series(text).value_counts()
-	fn = freq_comm.tail(n)
+def _remove_rarewords(x, freq, n=20):
+	fn = freq.tail(n)
 	x = ' '.join([t for t in x.split() if t not in fn])
 	return x
 
 def _spelling_correction(x):
 	x = TextBlob(x).correct()
 	return x
+
