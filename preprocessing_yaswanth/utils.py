@@ -167,7 +167,7 @@ def _remove_special_chars(x):
 	return x
 
 def _remove_html_tags(x):
-	return BeautifulSoup(x, 'lxml').get_text().strip()
+	return BeautifulSoup(x).get_text().strip()
 
 
 def _remove_accented_chars(x):
